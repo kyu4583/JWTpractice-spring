@@ -25,6 +25,7 @@ public class Member implements UserDetails {
     @Column(nullable = false)
     private String password;
     private String username;    //ID, 로그인 식별용
+    private String nickname;    //닉네임, 후보키가 아님, 중복 가능
 
     public void setId(Long id) {
         this.id = id;
