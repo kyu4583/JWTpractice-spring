@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class JwtTokenProvider {
+    private final int AT_EXP = 10000;   // Access Token 만료 시간
+    private final int RT_EXP = 60000;   // Refresh Token 만료 시간
     private final Key key;
 
     // application.yml에서 secret 값 가져와서 key에 저장
@@ -45,7 +47,7 @@ public class JwtTokenProvider {
         long now = (new Date()).getTime();  // 현재시간, 토큰 만료 시간 결정용
 
         // Access Token 생성
-        Date accessTokenExpiresIn = new Date(now + 8640000);    // 2.4시간 후 만료
+        Date accessTokenExpiresIn = new Date(now + AT_EXP);
         String accessToken = Jwts.builder()   // Jwt 토큰 생성
                 .setSubject(authentication.getName())   // 토큰 제목 설정(사용자 이름)
                 .claim("auth", authorities)     // 사용자 권한 목록을 포함하는 커스텀 클레임 추가
@@ -55,7 +57,7 @@ public class JwtTokenProvider {
 
         // Refresh Token 생성
         String refreshToken = Jwts.builder()    // Jwt 토큰 생성
-                .setExpiration(new Date(now + 86400000))    // 24시간 후 만ㄹ
+                .setExpiration(new Date(now + RT_EXP))
                 .signWith(key, SignatureAlgorithm.HS256)    // 토큰 암호화 알고리즘, 키 설정
                 .compact(); // 토큰 생성(문자열 형태)
 
